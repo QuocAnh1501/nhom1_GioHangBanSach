@@ -7,4 +7,3 @@ Thành viên nhóm:
 6. Thạch Phú Cường
  
  Nhóm thực hiện và trình bày framework Laravel và bảng Bảng CRUD trong Database online_shop  donhang = giỏ hàng
-
