@@ -1,0 +1,10 @@
+backend có các chức năng
+- Giỏ hàng:
++ Thêm
++ Xóa
++ Sửa
+- Đơn hàng:
++ Đặt hàng
++ Theo dõi đơn hàng
++ Hủy đơn hàng(khi trạng thái chưa đi đơn)
+- Đăng nhập/đăng kí(quản trị/khách hàng)
