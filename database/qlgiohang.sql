@@ -49,7 +49,7 @@ INSERT INTO `chitiet_donhang` (`ma_chitiet`, `ma_donhang`, `ma_sanpham`, `so_luo
 (6, 4, 6, 1, 90000.00, 90000.00),
 (7, 4, 8, 1, 80000.00, 80000.00),
 (8, 4, 1, 1, 120000.00, 120000.00),
-(9, 4, 7, 1, 65000.00, 65000.00);
+(9, 4, 7, 1, 70000.00, 70000.00);
 
 -- --------------------------------------------------------
 
@@ -297,3 +297,4 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
