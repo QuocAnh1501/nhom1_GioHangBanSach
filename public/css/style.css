@@ -74,13 +74,13 @@ a {
 }
 
 .search-form input:focus {
-    border-color: #176b45;
+    border-color: black;
 }
 
 .search-form button {
     padding: 11px 18px;
     color: white;
-    background: #176b45;
+    background: black;
     border: none;
     border-radius: 0 6px 6px 0;
     cursor: pointer;
@@ -240,7 +240,14 @@ a {
     margin: 0;
     padding: 0;
 }
-
+.navbar-button {
+    padding: 11px 18px;
+    color: white;
+    background: black;
+    border: none;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+}
 .navbar-menu > li {
     position: relative;
 }
