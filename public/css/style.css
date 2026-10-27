@@ -699,6 +699,9 @@ padding: 24px 16px;
 .stock-quantity {
     display: none;
 }
+<<<<<<< HEAD
+}
+=======
 }
 
 
@@ -738,3 +741,4 @@ form:has(.btn-add-cart) {
 .btn-add-cart {
     width: auto;
 }
+>>>>>>> 611a49f98c2420121ee9dfbc53d19ced5876f232

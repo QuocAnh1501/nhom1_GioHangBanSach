@@ -33,7 +33,33 @@
         @else
             <!-- Hiển thị khi CHƯA đăng nhập -->
             <li>
-                <a href="{{ route('login') }}" class="nav-link">Đăng nhập</a>
+                <a href="#" class="nav-link">
+                    Danh mục sách
+                    <span class="dropdown-arrow">▾</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Sách văn học</a></li>
+                    <li><a href="#">Sách kinh tế</a></li>
+                    <li><a href="#">Sách kỹ năng</a></li>
+                    <li><a href="#">Sách thiếu nhi</a></li>
+                    <li><a href="#">Sách giáo khoa</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="#" class="nav-link">Sách mới</a>
+            </li>
+
+            <li>
+                <a href="#" class="nav-link">Sách bán chạy</a>
+            </li>
+
+             <li>
+                <a href="{{ route('cart.index') }}" class="nav-link text-white">Giỏ hàng</a>
+            </li>
+
+            <li>
+                <a href="#" class="nav-link">Đăng nhập</a>
             </li>
         @endauth
             
