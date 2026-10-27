@@ -1,25 +1,43 @@
 <?php
-use App\Http\Controllers\SanPhamController;
+
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CartController;
+
+use App\Http\Controllers\SanPhamController;
 use App\Http\Controllers\ChiTietSanPhamController;
-
-// Import thêm 2 Admin Controller đúng với cấu trúc thư mục của bạn
-use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\OrderController;
-
-
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\AuthController;
 
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Client\OrderController as ClientOrderController;
+
+/*
+|--------------------------------------------------------------------------
+| Trang chủ
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', [SanPhamController::class, 'index'])
     ->name('home');
 
-// Sản phẩm
+/*
+|--------------------------------------------------------------------------
+| Sản phẩm
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/san-pham', [SanPhamController::class, 'index'])
     ->name('sanpham.index');
 
-// Giỏ hàng
+Route::get('/san-pham/{id}', [ChiTietSanPhamController::class, 'show'])
+    ->name('sanpham.chitiet');
+
+/*
+|--------------------------------------------------------------------------
+| Giỏ hàng
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/gio-hang', [CartController::class, 'index'])
     ->name('cart.index');
 
@@ -35,38 +53,76 @@ Route::delete('/gio-hang/xoa/{id}', [CartController::class, 'remove'])
 Route::delete('/gio-hang/lam-trong', [CartController::class, 'clear'])
     ->name('cart.clear');
 
-// Chi tiết sản phẩm
-Route::get('/san-pham/{id}', [ChiTietSanPhamController::class, 'show'])
-    ->name('sanpham.chitiet');
-    /*
+/*
 |--------------------------------------------------------------------------
-| Admin Routes (Giao diện quản trị)
+| Thanh toán và đặt hàng
 |--------------------------------------------------------------------------
+|
+| Cho phép khách vãng lai đặt hàng mà không cần đăng nhập.
+| Không đặt các route này trong middleware auth.
+|
 */
 
-Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
-    
-    // Quản lý sản phẩm (CRUD: Danh sách, Thêm, Sửa, Xóa)
-    Route::resource('products', ProductController::class);
+Route::get('/thanh-toan', [ClientOrderController::class, 'checkout'])
+    ->name('checkout');
 
-    // Quản lý đơn hàng
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
-});
+Route::post('/thanh-toan', [ClientOrderController::class, 'process'])
+    ->name('checkout.process');
 
-   /*
+/*
 |--------------------------------------------------------------------------
 | Đăng nhập và đăng ký
 |--------------------------------------------------------------------------
 */
-// Đăng nhập
-Route::get('/dang-nhap', [AuthController::class, 'showFormLogin'])->name('login');
-Route::post('/dang-nhap', [AuthController::class, 'login']); // Gửi POST trực tiếp tới URL đăng nhập
 
-// Đăng ký
-Route::get('/dang-ky', [AuthController::class, 'showFormRegister'])->name('register');
-Route::post('/dang-ky', [AuthController::class, 'register'])->name('register.post');
+Route::middleware('guest')->group(function () {
 
-// Đăng xuất
-Route::post('/dang-xuat', [AuthController::class, 'logout'])->name('logout');
+    // Đăng nhập
+    Route::get('/dang-nhap', [AuthController::class, 'showFormLogin'])
+        ->name('login');
+
+    Route::post('/dang-nhap', [AuthController::class, 'login'])
+        ->name('login.post');
+
+    // Đăng ký
+    Route::get('/dang-ky', [AuthController::class, 'showFormRegister'])
+        ->name('register');
+
+    Route::post('/dang-ky', [AuthController::class, 'register'])
+        ->name('register.post');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Đăng xuất
+|--------------------------------------------------------------------------
+*/
+
+Route::post('/dang-xuat', [AuthController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
+
+/*
+|--------------------------------------------------------------------------
+| Quản trị
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware('auth')
+    ->group(function () {
+
+        // Quản lý sản phẩm
+        Route::resource('products', ProductController::class);
+
+        // Quản lý đơn hàng
+        Route::get('/orders', [OrderController::class, 'index'])
+            ->name('orders.index');
+
+        Route::get('/orders/{order}', [OrderController::class, 'show'])
+            ->name('orders.show');
+
+        Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])
+            ->name('orders.updateStatus');
+    });

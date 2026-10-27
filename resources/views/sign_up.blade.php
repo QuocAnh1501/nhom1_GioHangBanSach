@@ -8,7 +8,7 @@
 
         <h2>Đăng ký tài khoản</h2>
 
-        <form method="POST" action="{{ route('register') }}">
+        <form action="{{ route('register.post') }}" method="POST">
             @csrf
 
             <input type="text" name="hoten"

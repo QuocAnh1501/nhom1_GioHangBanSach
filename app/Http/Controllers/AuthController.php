@@ -9,14 +9,16 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    // Hiển thị form đăng ký
     public function showFormRegister()
     {
-        return view('sign_up'); // Đảm bảo file tên sign_up.blade.php
+        return view('sign_up');
     }
 
+    // Hiển thị form đăng nhập
     public function showFormLogin()
     {
-        return view('sign_in'); // Đảm bảo file tên sign_in.blade.php
+        return view('sign_in');
     }
 
     // 1. XỬ LÝ ĐĂNG KÝ
@@ -28,18 +30,20 @@ class AuthController extends Controller
             'mat_khau' => 'required|string|min:6',
         ]);
 
-        // Tạo khách hàng mới vào CSDL
+        // Tạo tài khoản khách hàng mới
         KhachHang::create([
             'ho_ten'        => $request->hoten,
             'email'         => $request->email,
             'so_dien_thoai' => $request->so_dien_thoai ?? null,
             'dia_chi'       => $request->dia_chi ?? null,
-            'mat_khau'      => Hash::make($request->mat_khau), // Nên để tên cột CSDL là password
+            'mat_khau'      => Hash::make($request->mat_khau),
             'ngay_dang_ky'  => now(),
             'trang_thai'    => 1,
         ]);
 
-        return redirect()->route('login')->with('success', 'Đăng ký tài khoản thành công!');
+        return redirect()
+            ->route('login')
+            ->with('success', 'Đăng ký tài khoản thành công!');
     }
 
     // 2. XỬ LÝ ĐĂNG NHẬP
@@ -50,23 +54,40 @@ class AuthController extends Controller
             'mat_khau' => 'required',
         ]);
 
-        if (Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['mat_khau']])) {
+        // Chỉ cho phép tài khoản đang hoạt động đăng nhập
+        if (Auth::attempt([
+            'email'      => $credentials['email'],
+            'password'   => $credentials['mat_khau'],
+            'trang_thai' => 1,
+        ])) {
+            // Tạo lại session để tăng cường bảo mật
             $request->session()->regenerate();
-            return redirect()->intended('/')->with('success', 'Đăng nhập thành công!');
+
+            return redirect()
+                ->intended('/')
+                ->with('success', 'Đăng nhập thành công!');
         }
 
-        return back()->withErrors([
-            'email' => 'Email hoặc mật khẩu không chính xác.',
-        ]);
+        return back()
+            ->withErrors([
+                'email' => 'Email hoặc mật khẩu không chính xác.',
+            ])
+            ->onlyInput('email');
     }
 
-    // 3. ĐĂNG XUẤT
+    // 3. XỬ LÝ ĐĂNG XUẤT
     public function logout(Request $request)
     {
         Auth::logout();
+
+        // Hủy session hiện tại
         $request->session()->invalidate();
+
+        // Tạo lại CSRF token
         $request->session()->regenerateToken();
 
-        return redirect()->route('home')->with('success', 'Đã đăng xuất.');
+        return redirect()
+            ->route('home')
+            ->with('success', 'Đã đăng xuất.');
     }
 }
