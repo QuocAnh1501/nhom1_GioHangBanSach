@@ -2,6 +2,7 @@
 use App\Http\Controllers\SanPhamController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ChiTietSanPhamController;
 
 // Import thêm 2 Admin Controller đúng với cấu trúc thư mục của bạn
 use App\Http\Controllers\Admin\ProductController;
@@ -29,6 +30,10 @@ Route::delete('/gio-hang/xoa/{id}', [CartController::class, 'remove'])
 
 Route::delete('/gio-hang/lam-trong', [CartController::class, 'clear'])
     ->name('cart.clear');
+
+// Chi tiết sản phẩm
+Route::get('/san-pham/{id}', [ChiTietSanPhamController::class, 'show'])
+    ->name('sanpham.chitiet');
     /*
 |--------------------------------------------------------------------------
 | Admin Routes (Giao diện quản trị)

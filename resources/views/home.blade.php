@@ -7,62 +7,97 @@
 <div class="container">
 
 ```
-{{-- Phần chào mừng --}}
+{{-- Phần chào mừng và tìm kiếm --}}
 <section class="welcome-section">
-    <h1>Chào mừng đến với BookStore</h1>
-    <p>Khám phá những cuốn sách dành cho bạn.</p>
+    <h1>Khám phá thế giới sách cùng BookStore</h1>
+    <p>Tri thức trong tầm tay, cảm hứng trên từng trang sách.</p>
 
-    <form action="{{ url('/') }}" method="GET" class="search-form" style="align-items: center">
+    <form action="{{ url('/') }}" method="GET" class="search-form">
         <input
             type="text"
             name="q"
             value="{{ request('q') }}"
-            placeholder="Tìm kiếm sách, tác giả..."
+            placeholder="Tìm tên sách hoặc tác giả..."
         >
         <button type="submit">Tìm kiếm</button>
     </form>
 </section>
 
-{{-- Danh sách sách --}}
+{{-- Danh sách sản phẩm --}}
 <section class="products-section">
-    <h2>Danh sách sách</h2>
+    <div class="section-heading">
+        <div>
+            <h2>Sách dành cho bạn</h2>
+            <p>Khám phá những cuốn sách nổi bật tại cửa hàng.</p>
+        </div>
+
+        <span class="product-count">
+            {{ $sanPhams->count() }} sản phẩm
+        </span>
+    </div>
 
     @if ($sanPhams->isEmpty())
-        <p>Hiện chưa có sách nào.</p>
+        <div class="empty-products">
+            <h3>Chưa tìm thấy sách phù hợp</h3>
+            <p>Thử tìm kiếm bằng tên sách hoặc tác giả khác nhé!</p>
+            <a href="{{ url('/') }}" class="reset-search">
+                Xem tất cả sách
+            </a>
+        </div>
     @else
-        <div class="product-list">
+        <div class="product-grid">
             @foreach ($sanPhams as $sanPham)
-                <article class="product-item">
+                <article class="product-card">
 
-                    @if ($sanPham->hinh_anh)
-                        <img
-                            src="{{ asset('storage/' . $sanPham->hinh_anh) }}"
-                            alt="{{ $sanPham->ten_san_pham }}"
-                            class="product-image"
-                        >
-                    @endif
+                    <div class="product-image-wrapper">
+                        @if ($sanPham->hinh_anh)
+                            <img
+                                src="{{ asset('storage/' . $sanPham->hinh_anh) }}"
+                                alt="{{ $sanPham->ten_san_pham }}"
+                                class="product-image"
+                                loading="lazy"
+                            >
+                        @else
+                            <div class="no-image">
+                                <span>📚</span>
+                                <p>Chưa có ảnh bìa</p>
+                            </div>
+                        @endif
 
-                    <h3>{{ $sanPham->ten_san_pham }}</h3>
+                        @if ($sanPham->so_luong_ton > 0)
+                            <span class="stock-badge in-stock">
+                                Còn hàng
+                            </span>
+                        @else
+                            <span class="stock-badge out-of-stock">
+                                Hết hàng
+                            </span>
+                        @endif
+                    </div>
 
-                    <p>
-                        Tác giả:
-                        {{ $sanPham->tac_gia ?: 'Chưa cập nhật' }}
-                    </p>
+                    <div class="product-info">
+                        <h3 class="product-name">
+                            {{ $sanPham->ten_san_pham }}
+                        </h3>
 
-                    <p>
-                        Nhà xuất bản:
-                        {{ $sanPham->nha_xuat_ban ?: 'Chưa cập nhật' }}
-                    </p>
+                        <p class="product-author">
+                            {{ $sanPham->tac_gia ?: 'Chưa cập nhật tác giả' }}
+                        </p>
 
-                    <p class="product-price">
-                        {{ number_format($sanPham->gia_ban, 0, ',', '.') }} VNĐ
-                    </p>
+                        <p class="product-publisher">
+                            {{ $sanPham->nha_xuat_ban ?: 'Chưa cập nhật NXB' }}
+                        </p>
 
-                    @if ($sanPham->so_luong_ton > 0)
-                        <p>Còn hàng</p>
-                    @else
-                        <p>Hết hàng</p>
-                    @endif
+                        <div class="product-bottom">
+                            <span class="product-price">
+                                {{ number_format($sanPham->gia_ban, 0, ',', '.') }}₫
+                            </span>
+
+                            <span class="stock-quantity">
+                                Còn {{ $sanPham->so_luong_ton }}
+                            </span>
+                        </div>
+                    </div>
 
                 </article>
             @endforeach
