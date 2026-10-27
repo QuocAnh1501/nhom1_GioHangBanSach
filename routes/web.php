@@ -1,11 +1,14 @@
 <?php
-
+use App\Http\Controllers\SanPhamController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 
-Route::get('/', function () {
-    return view('home');
-});
+Route::get('/', [SanPhamController::class, 'index'])
+    ->name('home');
+
+// Sản phẩm
+Route::get('/san-pham', [SanPhamController::class, 'index'])
+    ->name('sanpham.index');
 
 // Giỏ hàng
 Route::get('/gio-hang', [CartController::class, 'index'])
