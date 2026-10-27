@@ -60,9 +60,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 | Đăng nhập và đăng ký
 |--------------------------------------------------------------------------
 */
-
+// Đăng nhập
 Route::get('/dang-nhap', [AuthController::class, 'showFormLogin'])->name('login');
-Route::post('/dang-nhap', [AuthController::class, 'login'])->name('login.post');
+Route::post('/dang-nhap', [AuthController::class, 'login']); // Gửi POST trực tiếp tới URL đăng nhập
 
 // Đăng ký
 Route::get('/dang-ky', [AuthController::class, 'showFormRegister'])->name('register');

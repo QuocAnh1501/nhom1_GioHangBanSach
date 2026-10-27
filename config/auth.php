@@ -59,12 +59,11 @@ return [
     |
     */
 'providers' => [
-    'users' => [
-        'driver' => 'eloquent',
-        'model' => App\Models\KhachHang::class, // Trỏ đến Model KhachHang
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\KhachHang::class,
+        ],
     ],
-],
-
     /*
     |--------------------------------------------------------------------------
     | Resetting Passwords

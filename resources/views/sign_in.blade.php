@@ -35,7 +35,7 @@
             <div class="form-group" style="margin-bottom: 16px;">
                 <input 
                     type="password" 
-                    name="password" 
+                    name="mat_khau" 
                     placeholder="Mật khẩu" 
                     required 
                     class="auth-input"

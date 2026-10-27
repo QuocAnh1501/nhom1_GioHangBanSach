@@ -49,7 +49,7 @@
            @auth
             <!-- Hiển thị khi ĐÃ đăng nhập -->
             <li>
-                <a href="{{ route('profile') }}" class="nav-link">
+                <a href="{{ url('/') }}" class="nav-link">
                     Hi, {{ Auth::user()->name }}
                 </a>
             </li>

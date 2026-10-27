@@ -8,16 +8,16 @@
 
         <h2>Đăng ký tài khoản</h2>
 
-        <form method="POST" action="#">
+        <form method="POST" action="{{ route('register') }}">
             @csrf
 
-            <input type="text" name="fullname"
+            <input type="text" name="hoten"
                    placeholder="Họ và tên" required>
 
             <input type="email" name="email"
                    placeholder="Email" required>
 
-            <input type="password" name="password"
+            <input type="password" name="mat_khau"
                    placeholder="Mật khẩu" required>
 
             <button type="submit">Đăng ký</button>
