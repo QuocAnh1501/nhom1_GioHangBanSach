@@ -6,7 +6,6 @@
 
 <div class="container">
 
-```
 {{-- Phần chào mừng và tìm kiếm --}}
 <section class="welcome-section">
     <h1>Khám phá thế giới sách cùng BookStore</h1>
