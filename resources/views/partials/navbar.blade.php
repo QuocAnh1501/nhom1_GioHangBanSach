@@ -9,17 +9,29 @@
 
         <!-- Menu chính -->
         <ul class="navbar-menu">
-            <li>
-                 <form action="#" method="GET" class="search-form" style="align-items: center">
-                    <input
-                        type="text"
-                        name="q"
-                        placeholder="Tìm kiếm sách, tác giả..."
-                    >
-                    <button class="navbar-button" type="submit">Tìm kiếm</button>
-                </form>
+             <li>
+                <a href="{{ route('cart.index') }}" class="nav-link">
+                 Giỏ hàng
+                </a>
             </li>
 
+           @auth
+            <!-- Hiển thị khi ĐÃ đăng nhập -->
+            <li>
+                <a href="{{ url('/') }}" class="nav-link">
+                    Hi, {{ Auth::user()->name }}
+                </a>
+            </li>
+            <li>
+                <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="nav-link" style="background: none; border: none; cursor: pointer;">
+                        Đăng xuất
+                    </button>
+                </form>
+            </li>
+        @else
+            <!-- Hiển thị khi CHƯA đăng nhập -->
             <li>
                 <a href="#" class="nav-link">
                     Danh mục sách
@@ -49,6 +61,7 @@
             <li>
                 <a href="#" class="nav-link">Đăng nhập</a>
             </li>
+        @endauth
             
         </ul>
 

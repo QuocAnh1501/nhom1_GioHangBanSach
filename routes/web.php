@@ -8,6 +8,10 @@ use App\Http\Controllers\ChiTietSanPhamController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\OrderController;
 
+
+use App\Http\Controllers\AuthController;
+
+
 Route::get('/', [SanPhamController::class, 'index'])
     ->name('home');
 
@@ -51,15 +55,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 });
 
-Route::get('/gio-hang', function () {
-    return view('cart'); // Giả sử file giao diện tên là cart.blade.php
-})->name('cart.index');
+   /*
+|--------------------------------------------------------------------------
+| Đăng nhập và đăng ký
+|--------------------------------------------------------------------------
+*/
+// Đăng nhập
+Route::get('/dang-nhap', [AuthController::class, 'showFormLogin'])->name('login');
+Route::post('/dang-nhap', [AuthController::class, 'login']); // Gửi POST trực tiếp tới URL đăng nhập
 
-Route::get('/thanh-toan', function () {
-    return view('checkout');
-})->name('checkout');
+// Đăng ký
+Route::get('/dang-ky', [AuthController::class, 'showFormRegister'])->name('register');
+Route::post('/dang-ky', [AuthController::class, 'register'])->name('register.post');
 
-Route::post('/thanh-toan/xu-ly', function () {
-    // Xử lý lưu đơn hàng sau
-    return redirect()->route('home')->with('success', 'Đặt hàng thành công!');
-})->name('checkout.process');
+// Đăng xuất
+Route::post('/dang-xuat', [AuthController::class, 'logout'])->name('logout');

@@ -699,4 +699,46 @@ padding: 24px 16px;
 .stock-quantity {
     display: none;
 }
+<<<<<<< HEAD
 }
+=======
+}
+
+
+
+.btn-add-cart {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    background-color: #097624;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.btn-add-cart:hover {
+    background-color: #2563EB;
+    transform: translateY(-2px);
+}
+
+.btn-add-cart:active {
+    transform: translateY(0);
+}
+
+
+form:has(.btn-add-cart) {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-add-cart {
+    width: auto;
+}
+>>>>>>> 611a49f98c2420121ee9dfbc53d19ced5876f232
