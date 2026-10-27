@@ -58,19 +58,12 @@ return [
     | Supported: "database", "eloquent"
     |
     */
-
-    'providers' => [
+'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\KhachHang::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Resetting Passwords
