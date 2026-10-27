@@ -25,7 +25,7 @@
 
         <p>
             Đã có tài khoản?
-            <a href="#">Đăng nhập</a>
+            <a href="{{ route('login') }}">Đăng nhập</a>
         </p>
 
     </div>
