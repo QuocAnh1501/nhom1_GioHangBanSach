@@ -3,90 +3,156 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\SanPham; 
+use App\Models\SanPham;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    /**
+     * Hiển thị danh sách sản phẩm.
+     */
     public function index()
     {
-        $products = SanPham::latest()->paginate(10);
+        $products = SanPham::orderBy('ma_sanpham', 'desc')
+            ->paginate(10);
+
         return view('admin.products.index', compact('products'));
     }
 
+    /**
+     * Hiển thị biểu mẫu thêm sản phẩm.
+     */
     public function create()
     {
         return view('admin.products.create');
     }
 
+    /**
+     * Lưu sản phẩm mới vào database.
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'name'        => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price'       => 'required|numeric|min:0',
-            'stock'       => 'required|integer|min:0',
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        $validated = $request->validate([
+            'ma_danhmuc'     => 'required|integer',
+            'ten_san_pham'   => 'required|string|max:255',
+            'tac_gia'        => 'nullable|string|max:255',
+            'nha_xuat_ban'   => 'nullable|string|max:255',
+            'nam_xuat_ban'   => 'nullable|integer|min:1|max:2100',
+            'isbn'           => 'nullable|string|max:50',
+            'mo_ta'          => 'nullable|string',
+            'gia_ban'        => 'required|numeric|min:0',
+            'so_luong_ton'   => 'required|integer|min:0',
+            'hinh_anh'       => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'trang_thai'     => 'required|in:0,1',
         ]);
 
-        $data = $request->only(['name', 'description', 'price', 'stock']);
-        $data['slug'] = Str::slug($request->name) . '-' . time();
+        // Kiểm tra danh mục có tồn tại hay không.
+        $danhMucTonTai = \Illuminate\Support\Facades\DB::table('danh_muc')
+            ->where('ma_danhmuc', $validated['ma_danhmuc'])
+            ->exists();
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('products', 'public');
+        if (!$danhMucTonTai) {
+            return back()
+                ->withErrors(['ma_danhmuc' => 'Danh mục không tồn tại.'])
+                ->withInput();
         }
 
-        SanPham::create($data);
+        // Lưu ảnh nếu người dùng tải lên.
+        if ($request->hasFile('hinh_anh')) {
+            $validated['hinh_anh'] = $request->file('hinh_anh')
+                ->store('products', 'public');
+        }
 
-        return redirect()->route('admin.products.index')
-                         ->with('success', 'Thêm sản phẩm thành công!');
+        SanPham::create($validated);
+
+        return redirect()
+            ->route('admin.products.index')
+            ->with('success', 'Thêm sản phẩm thành công!');
     }
 
-    public function edit(SanPham $product)
+    /**
+     * Hiển thị biểu mẫu chỉnh sửa sản phẩm.
+     */
+    public function edit($id)
     {
+        $product = SanPham::findOrFail($id);
+
         return view('admin.products.edit', compact('product'));
     }
 
-    public function update(Request $request, SanPham $product)
+    /**
+     * Cập nhật thông tin sản phẩm.
+     */
+    public function update(Request $request, $id)
     {
-        $request->validate([
-            'name'        => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price'       => 'required|numeric|min:0',
-            'stock'       => 'required|integer|min:0',
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        $product = SanPham::findOrFail($id);
+
+        $validated = $request->validate([
+            'ma_danhmuc'     => 'required|integer',
+            'ten_san_pham'   => 'required|string|max:255',
+            'tac_gia'        => 'nullable|string|max:255',
+            'nha_xuat_ban'   => 'nullable|string|max:255',
+            'nam_xuat_ban'   => 'nullable|integer|min:1|max:2100',
+            'isbn'           => 'nullable|string|max:50',
+            'mo_ta'          => 'nullable|string',
+            'gia_ban'        => 'required|numeric|min:0',
+            'so_luong_ton'   => 'required|integer|min:0',
+            'hinh_anh'       => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'trang_thai'     => 'required|in:0,1',
         ]);
 
-        $data = $request->only(['name', 'description', 'price', 'stock']);
+        $danhMucTonTai = \Illuminate\Support\Facades\DB::table('danh_muc')
+            ->where('ma_danhmuc', $validated['ma_danhmuc'])
+            ->exists();
 
-        if ($request->name !== $product->name) {
-            $data['slug'] = Str::slug($request->name) . '-' . time();
+        if (!$danhMucTonTai) {
+            return back()
+                ->withErrors(['ma_danhmuc' => 'Danh mục không tồn tại.'])
+                ->withInput();
         }
 
-        if ($request->hasFile('image')) {
-            if ($product->image && Storage::disk('public')->exists($product->image)) {
-                Storage::disk('public')->delete($product->image);
+        // Thay ảnh cũ nếu có ảnh mới.
+        if ($request->hasFile('hinh_anh')) {
+            if (
+                $product->hinh_anh &&
+                Storage::disk('public')->exists($product->hinh_anh)
+            ) {
+                Storage::disk('public')->delete($product->hinh_anh);
             }
-            $data['image'] = $request->file('image')->store('products', 'public');
+
+            $validated['hinh_anh'] = $request->file('hinh_anh')
+                ->store('products', 'public');
+        } else {
+            unset($validated['hinh_anh']);
         }
 
-        $product->update($data);
+        $product->update($validated);
 
-        return redirect()->route('admin.products.index')
-                         ->with('success', 'Cập nhật sản phẩm thành công!');
+        return redirect()
+            ->route('admin.products.index')
+            ->with('success', 'Cập nhật sản phẩm thành công!');
     }
 
-    public function destroy(SanPham $product)
+    /**
+     * Xóa sản phẩm.
+     */
+    public function destroy($id)
     {
-        if ($product->image && Storage::disk('public')->exists($product->image)) {
-            Storage::disk('public')->delete($product->image);
+        $product = SanPham::findOrFail($id);
+
+        // Xóa ảnh khỏi storage nếu có.
+        if (
+            $product->hinh_anh &&
+            Storage::disk('public')->exists($product->hinh_anh)
+        ) {
+            Storage::disk('public')->delete($product->hinh_anh);
         }
 
         $product->delete();
 
-        return redirect()->route('admin.products.index')
-                         ->with('success', 'Xóa sản phẩm thành công!');
+        return redirect()
+            ->route('admin.products.index')
+            ->with('success', 'Xóa sản phẩm thành công!');
     }
 }
