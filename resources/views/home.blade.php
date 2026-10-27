@@ -6,6 +6,7 @@
 
 <div class="container">
 
+```
 {{-- Phần chào mừng và tìm kiếm --}}
 <section class="welcome-section">
     <h1>Khám phá thế giới sách cùng BookStore</h1>
@@ -39,6 +40,7 @@
         <div class="empty-products">
             <h3>Chưa tìm thấy sách phù hợp</h3>
             <p>Thử tìm kiếm bằng tên sách hoặc tác giả khác nhé!</p>
+
             <a href="{{ url('/') }}" class="reset-search">
                 Xem tất cả sách
             </a>
@@ -48,6 +50,7 @@
             @foreach ($sanPhams as $sanPham)
                 <article class="product-card">
 
+                    {{-- Ảnh bìa --}}
                     <div class="product-image-wrapper">
                         @if ($sanPham->hinh_anh)
                             <img
@@ -63,6 +66,7 @@
                             </div>
                         @endif
 
+                        {{-- Trạng thái tồn kho --}}
                         @if ($sanPham->so_luong_ton > 0)
                             <span class="stock-badge in-stock">
                                 Còn hàng
@@ -74,6 +78,7 @@
                         @endif
                     </div>
 
+                    {{-- Thông tin sản phẩm --}}
                     <div class="product-info">
                         <h3 class="product-name">
                             {{ $sanPham->ten_san_pham }}
@@ -96,17 +101,24 @@
                                 Còn {{ $sanPham->so_luong_ton }}
                             </span>
                         </div>
-                        <form action="#" method="POST">
+
+                        {{-- Form thêm vào giỏ hàng --}}
+                        <form
+                            action="{{ route('cart.add', ['id' => $sanPham->ma_sanpham]) }}"
+                            method="POST"
+                            class="add-cart-form"
+                        >
                             @csrf
-                            <input
-                                type="hidden"
-                                name="product_id"
-                                value="#"
-                               >
-                            <button type="submit" class="btn-add-cart">
+
+                            <button
+                                type="submit"
+                                class="btn-add-cart"
+                                {{ $sanPham->so_luong_ton <= 0 ? 'disabled' : '' }}
+                                title="Thêm vào giỏ hàng"
+                            >
                                 🛒
                             </button>
-                        </form> 
+                        </form>
                     </div>
 
                 </article>
@@ -114,5 +126,8 @@
         </div>
     @endif
 </section>
+```
+
 </div>
+
 @endsection

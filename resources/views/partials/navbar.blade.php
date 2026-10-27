@@ -10,7 +10,9 @@
         <!-- Menu chính -->
         <ul class="navbar-menu">
              <li>
-                <a href="#" class="nav-link">Giỏ hàng</a>
+                <a href="{{ route('cart.index') }}" class="nav-link">
+                 Giỏ hàng
+                </a>
             </li>
 
            @auth
