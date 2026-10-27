@@ -4,6 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ChiTietSanPhamController;
 
+// Import thêm 2 Admin Controller đúng với cấu trúc thư mục của bạn
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\OrderController;
+
 Route::get('/', [SanPhamController::class, 'index'])
     ->name('home');
 
@@ -30,3 +34,19 @@ Route::delete('/gio-hang/lam-trong', [CartController::class, 'clear'])
 // Chi tiết sản phẩm
 Route::get('/san-pham/{id}', [ChiTietSanPhamController::class, 'show'])
     ->name('sanpham.chitiet');
+    /*
+|--------------------------------------------------------------------------
+| Admin Routes (Giao diện quản trị)
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    
+    // Quản lý sản phẩm (CRUD: Danh sách, Thêm, Sửa, Xóa)
+    Route::resource('products', ProductController::class);
+
+    // Quản lý đơn hàng
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+});
