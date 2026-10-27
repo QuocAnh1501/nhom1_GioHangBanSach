@@ -2,6 +2,7 @@
 use App\Http\Controllers\SanPhamController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ChiTietSanPhamController;
 
 Route::get('/', [SanPhamController::class, 'index'])
     ->name('home');
@@ -25,3 +26,7 @@ Route::delete('/gio-hang/xoa/{id}', [CartController::class, 'remove'])
 
 Route::delete('/gio-hang/lam-trong', [CartController::class, 'clear'])
     ->name('cart.clear');
+
+// Chi tiết sản phẩm
+Route::get('/san-pham/{id}', [ChiTietSanPhamController::class, 'show'])
+    ->name('sanpham.chitiet');
