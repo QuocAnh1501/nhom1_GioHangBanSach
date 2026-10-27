@@ -1,72 +1,263 @@
 @extends('layouts.app')
 
+@section('title', 'Giỏ hàng - BookStore')
+
 @section('content')
-<div class="container py-5">
-    <div style="max-width: 1000px; margin: 0 auto;">
-        
-        <!-- Tiêu đề giỏ hàng căn giữa tuyệt đối -->
-        <h3 class="fw-bold mb-4" style="color: #114b3e; text-align: center; display: block; width: 100%;">
-            🛒 Giỏ hàng của bạn
-        </h3>
+<div class="cart-page">
 
-        <!-- Khung chứa bảng giỏ hàng -->
-        <div class="card border-0 shadow-sm rounded-3 overflow-hidden mb-4">
-            <div class="table-responsive">
-                <!-- table-layout: fixed giúp cố định tuyệt đối độ rộng các cột, không bị dính chữ -->
-                <table class="table table-hover align-middle mb-0" style="width: 100%; table-layout: fixed;">
-                    <thead class="text-white text-uppercase" style="background-color: #114b3e; font-size: 13px; letter-spacing: 0.5px;">
-                        <tr>
-                            <th scope="col" class="py-3 text-center" style="width: 50px;"></th>
-                            <th scope="col" class="py-3 px-2" style="width: 110px;">Ảnh</th>
-                            <th scope="col" class="py-3 px-2" style="width: 260px;">Sản phẩm</th>
-                            <th scope="col" class="py-3 px-2" style="width: 140px;">Giá</th>
-                            <th scope="col" class="py-3 px-2 text-center" style="width: 120px;">Số lượng</th>
-                            <th scope="col" class="py-3 px-2" style="width: 140px;">Tổng</th>
-                            <th scope="col" class="py-3 px-2 text-center" style="width: 80px;">Xóa</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-center py-3" style="width: 50px;">
-                                <input type="checkbox" style="transform: scale(1.2); cursor: pointer;">
-                            </td>
-                            <td class="px-2 py-3" style="width: 110px;">
-                                <img src="{{ asset('images/book.jpg') }}" alt="Sách" class="rounded border shadow-sm" style="width: 65px; height: 90px; object-fit: cover;">
-                            </td>
-                            <td class="px-2 py-3 text-dark fw-bold" style="width: 260px; font-size: 15px;">
-                                Sách gì đó
-                            </td>
-                            <td class="px-2 py-3 text-danger fw-semibold" style="width: 140px; font-size: 14px;">
-                                180,000 VNĐ
-                            </td>
-                            <td class="px-2 py-3 text-center" style="width: 120px;">
-                                <input type="number" value="1" min="1" style="width: 60px; padding: 6px; text-align: center; border: 1px solid #ced4da; border-radius: 6px; outline: none; font-size: 14px;">
-                            </td>
-                            <td class="px-2 py-3 text-dark fw-bold" style="width: 140px; font-size: 14px;">
-                                180,000 VNĐ
-                            </td>
-                            <td class="px-2 py-3 text-center" style="width: 80px;">
-                                <button type="button" title="Xóa sản phẩm" style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #dc3545; background: #fff; color: #dc3545; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;">
-                                    ✕
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    {{-- Tiêu đề --}}
+    <div class="cart-heading">
+        <h1>🛒 Giỏ hàng của bạn</h1>
+        <p>Kiểm tra sách bạn đã chọn trước khi thanh toán.</p>
+    </div>
+
+    {{-- Thông báo --}}
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
         </div>
+    @endif
 
-        <!-- Khung tổng tiền và nút tiến hành thanh toán -->
-        <div style="background: #fff; padding: 22px 28px; border-radius: 8px; box-shadow: 0 .125rem .25rem rgba(0,0,0,.075); display: flex; flex-direction: column; align-items: flex-end; gap: 14px;">
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <span style="font-size: 16px; color: #495057; font-weight: 600;">Tổng tiền thanh toán:</span>
-                <span style="font-size: 22px; font-weight: 700; color: #dc3545;">180,000 VNĐ</span>
-            </div>
-            <a href="{{ route('checkout') }}" style="display: inline-block; padding: 12px 30px; background-color: #114b3e; color: #fff; font-weight: 700; text-transform: uppercase; text-decoration: none; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; transition: background 0.2s;">
-                Tiến hành thanh toán
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    @if (empty($cart))
+
+        {{-- Giỏ hàng trống --}}
+        <div class="cart-empty">
+            <div class="cart-empty-icon">📚</div>
+
+            <h2>Giỏ hàng đang trống</h2>
+
+            <p>
+                Có rất nhiều cuốn sách thú vị đang chờ bạn khám phá.
+            </p>
+
+            <a href="{{ route('sanpham.index') }}" class="cart-empty-link">
+                Tiếp tục mua sắm
             </a>
         </div>
 
-    </div>
+    @else
+
+        <div class="cart-layout">
+
+            {{-- CỘT TRÁI: DANH SÁCH SẢN PHẨM --}}
+            <section class="cart-items-section">
+
+                <div class="cart-card">
+                    <div class="cart-table-wrapper">
+                        <table class="cart-table">
+
+                            <thead>
+                                <tr>
+                                    <th colspan="2">SẢN PHẨM</th>
+                                    <th>ĐƠN GIÁ</th>
+                                    <th>SỐ LƯỢNG</th>
+                                    <th>THÀNH TIỀN</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach ($cart as $id => $item)
+                                    <tr>
+                                        {{-- Ảnh và tên sách --}}
+                                        <td colspan="2">
+                                            <div class="cart-product">
+
+                                                @if (!empty($item['hinh_anh']))
+                                                    <img
+                                                        src="{{ asset('storage/' . ltrim($item['hinh_anh'], '/')) }}"
+                                                        alt="{{ $item['ten_san_pham'] }}"
+                                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                                    >
+
+                                                    <div
+                                                        style="display:none; width:68px; height:94px; align-items:center; justify-content:center; flex-shrink:0; background:#f5f7f5; border-radius:6px;"
+                                                    >
+                                                        📚
+                                                    </div>
+                                                @else
+                                                    <div
+                                                        style="width:68px; height:94px; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:#f5f7f5; border-radius:6px;"
+                                                    >
+                                                        📚
+                                                    </div>
+                                                @endif
+
+                                                <div>
+                                                    <div class="cart-product-name">
+                                                        {{ $item['ten_san_pham'] }}
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </td>
+
+                                        {{-- Đơn giá --}}
+                                        <td>
+                                            <span class="cart-product-price">
+                                                {{ number_format($item['gia_ban'], 0, ',', '.') }}₫
+                                            </span>
+                                        </td>
+
+                                        {{-- Số lượng --}}
+                                        <td>
+                                            <form
+                                                action="{{ route('cart.update', ['id' => $id]) }}"
+                                                method="POST"
+                                                class="cart-quantity-form"
+                                            >
+                                                @csrf
+                                                @method('PUT')
+
+                                                <input
+                                                    type="number"
+                                                    name="so_luong"
+                                                    value="{{ $item['so_luong'] }}"
+                                                    min="1"
+                                                    max="{{ $item['so_luong_ton'] ?? '' }}"
+                                                    required
+                                                    class="cart-quantity-input"
+                                                    aria-label="Số lượng {{ $item['ten_san_pham'] }}"
+                                                >
+
+                                                <button
+                                                    type="submit"
+                                                    class="cart-update-btn"
+                                                    title="Cập nhật số lượng"
+                                                    aria-label="Cập nhật số lượng"
+                                                >
+                                                    ✓
+                                                </button>
+                                            </form>
+
+                                            @if (isset($item['so_luong_ton']))
+                                                <span class="cart-stock">
+                                                    Còn {{ $item['so_luong_ton'] }}
+                                                </span>
+                                            @endif
+                                        </td>
+
+                                        {{-- Thành tiền --}}
+                                        <td>
+                                            <span class="cart-line-total">
+                                                {{ number_format($item['gia_ban'] * $item['so_luong'], 0, ',', '.') }}₫
+                                            </span>
+                                        </td>
+
+                                        {{-- Xóa --}}
+                                        <td>
+                                            <form
+                                                action="{{ route('cart.remove', ['id' => $id]) }}"
+                                                method="POST"
+                                                onsubmit="return confirm('Bạn có chắc muốn xóa sách này khỏi giỏ hàng?');"
+                                            >
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button
+                                                    type="submit"
+                                                    class="cart-remove-btn"
+                                                    title="Xóa sản phẩm"
+                                                    aria-label="Xóa {{ $item['ten_san_pham'] }}"
+                                                >
+                                                    ✕
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+
+                {{-- Tiếp tục mua sắm --}}
+                <a href="{{ route('sanpham.index') }}" class="cart-continue">
+                    <span>←</span>
+                    Tiếp tục mua sắm
+                </a>
+
+            </section>
+
+            {{-- CỘT PHẢI: TÓM TẮT ĐƠN HÀNG --}}
+            <aside class="cart-summary">
+
+                <h2>Tóm tắt đơn hàng</h2>
+
+                <div class="cart-summary-row">
+                    <span>Số loại sản phẩm</span>
+                    <strong>{{ count($cart) }}</strong>
+                </div>
+
+                <div class="cart-summary-row">
+                    <span>Tổng số lượng</span>
+                    <strong>
+                        {{ collect($cart)->sum('so_luong') }} cuốn
+                    </strong>
+                </div>
+
+                <div class="cart-summary-row">
+                    <span>Tạm tính</span>
+                    <strong>
+                        {{ number_format($total, 0, ',', '.') }}₫
+                    </strong>
+                </div>
+
+                <div class="cart-summary-row">
+                    <span>Phí vận chuyển</span>
+                    <strong>Tính khi đặt hàng</strong>
+                </div>
+
+                <hr class="cart-summary-divider">
+
+                <div class="cart-summary-total">
+                    <span>Tổng cộng</span>
+                    <strong>
+                        {{ number_format($total, 0, ',', '.') }}₫
+                    </strong>
+                </div>
+
+                <a href="{{ route('checkout') }}" class="cart-checkout-btn">
+                    TIẾN HÀNH THANH TOÁN →
+                </a>
+
+                {{-- Làm trống giỏ hàng --}}
+                <form
+                    action="{{ route('cart.clear') }}"
+                    method="POST"
+                    class="cart-clear-form"
+                    onsubmit="return confirm('Bạn có chắc muốn làm trống giỏ hàng?');"
+                >
+                    @csrf
+                    @method('DELETE')
+
+                    <button type="submit" class="cart-clear-btn">
+                        Làm trống giỏ hàng
+                    </button>
+                </form>
+
+            </aside>
+
+        </div>
+
+    @endif
+
 </div>
 @endsection

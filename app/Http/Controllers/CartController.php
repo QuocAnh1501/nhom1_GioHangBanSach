@@ -20,7 +20,7 @@ class CartController extends Controller
             $total += $item['gia_ban'] * $item['so_luong'];
         }
 
-        return view('cart.index', compact('cart', 'total'));
+        return view('cart', compact('cart', 'total'));
     }
 
     /**
@@ -69,8 +69,8 @@ class CartController extends Controller
         session()->put('cart', $cart);
 
         return redirect()
-            ->route('cart.index')
-            ->with('success', 'Đã thêm sản phẩm vào giỏ hàng.');
+        ->back()
+        ->with('success', 'Đã thêm sản phẩm vào giỏ hàng.');
     }
 
     /**

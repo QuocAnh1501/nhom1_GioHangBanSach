@@ -1,68 +1,85 @@
 <nav class="main-navbar">
     <div class="navbar-container">
 
-        <!-- Logo -->
-        <a href="{{ url('/') }}" class="navbar-logo">
+        {{-- Logo --}}
+        <a href="{{ route('home') }}" class="navbar-logo">
             <span class="logo-icon">B</span>
             <span>BookStore</span>
         </a>
 
-        <!-- Menu chính -->
+        {{-- Menu chính --}}
         <ul class="navbar-menu">
-             <li>
-                <a href="{{ route('cart.index') }}" class="nav-link">
-                 Giỏ hàng
-                </a>
-            </li>
 
-           @auth
-            <!-- Hiển thị khi ĐÃ đăng nhập -->
+            {{-- Danh mục sách --}}
             <li>
-                <a href="{{ url('/') }}" class="nav-link">
-                    Hi, {{ Auth::user()->name }}
-                </a>
-            </li>
-            <li>
-                <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-                    @csrf
-                    <button type="submit" class="nav-link" style="background: none; border: none; cursor: pointer;">
-                        Đăng xuất
-                    </button>
-                </form>
-            </li>
-        @else
-            <!-- Hiển thị khi CHƯA đăng nhập -->
-            <li>
-                <a href="#" class="nav-link">
+                <a href="{{ route('sanpham.index') }}" class="nav-link">
                     Danh mục sách
                     <span class="dropdown-arrow">▾</span>
                 </a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Sách văn học</a></li>
-                    <li><a href="#">Sách kinh tế</a></li>
-                    <li><a href="#">Sách kỹ năng</a></li>
-                    <li><a href="#">Sách thiếu nhi</a></li>
-                    <li><a href="#">Sách giáo khoa</a></li>
-                </ul>
             </li>
 
+            {{-- Sách mới --}}
             <li>
-                <a href="#" class="nav-link">Sách mới</a>
+                <a href="{{ route('sanpham.index') }}" class="nav-link">
+                    Sách mới
+                </a>
             </li>
 
+            {{-- Sách bán chạy --}}
             <li>
-                <a href="#" class="nav-link">Sách bán chạy</a>
+                <a href="{{ route('sanpham.index') }}" class="nav-link">
+                    Sách bán chạy
+                </a>
             </li>
 
-             <li>
-                <a href="{{ route('cart.index') }}" class="nav-link text-white">Giỏ hàng</a>
-            </li>
-
+            {{-- Giỏ hàng --}}
             <li>
-                <a href="#" class="nav-link">Đăng nhập</a>
+                <a href="{{ route('cart.index') }}" class="nav-link">
+                    Giỏ hàng
+                </a>
             </li>
-        @endauth
-            
+
+            @auth
+                {{-- Hiển thị khi đã đăng nhập --}}
+                <li>
+                    <a href="{{ route('home') }}" class="nav-link">
+                        Xin chào, {{ Auth::user()->ho_ten }}
+                    </a>
+                </li>
+
+                {{-- Đăng xuất --}}
+                <li>
+                    <form
+                        action="{{ route('logout') }}"
+                        method="POST"
+                        style="display: inline;"
+                    >
+                        @csrf
+
+                        <button
+                            type="submit"
+                            class="nav-link"
+                            style="background: none; border: none; cursor: pointer;"
+                        >
+                            Đăng xuất
+                        </button>
+                    </form>
+                </li>
+            @else
+                {{-- Hiển thị khi chưa đăng nhập --}}
+                <li>
+                    <a href="{{ route('login') }}" class="nav-link">
+                        Đăng nhập
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('register') }}" class="nav-link">
+                        Đăng ký
+                    </a>
+                </li>
+            @endauth
+
         </ul>
 
     </div>
