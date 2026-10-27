@@ -96,6 +96,17 @@
                                 Còn {{ $sanPham->so_luong_ton }}
                             </span>
                         </div>
+                        <form action="#" method="POST">
+                            @csrf
+                            <input
+                                type="hidden"
+                                name="product_id"
+                                value="#"
+                               >
+                            <button type="submit" class="btn-add-cart">
+                                🛒
+                            </button>
+                        </form> 
                     </div>
 
                 </article>
@@ -103,7 +114,5 @@
         </div>
     @endif
 </section>
-```
-
 </div>
 @endsection
