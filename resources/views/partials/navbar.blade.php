@@ -43,7 +43,7 @@
             </li>
 
              <li>
-                <a href="#" class="nav-link">Giỏ hàng</a>
+                <a href="{{ route('cart.index') }}" class="nav-link text-white">Giỏ hàng</a>
             </li>
 
             <li>

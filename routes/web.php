@@ -50,3 +50,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 });
+
+Route::get('/gio-hang', function () {
+    return view('cart'); // Giả sử file giao diện tên là cart.blade.php
+})->name('cart.index');
+
+Route::get('/thanh-toan', function () {
+    return view('checkout');
+})->name('checkout');
+
+Route::post('/thanh-toan/xu-ly', function () {
+    // Xử lý lưu đơn hàng sau
+    return redirect()->route('home')->with('success', 'Đặt hàng thành công!');
+})->name('checkout.process');
