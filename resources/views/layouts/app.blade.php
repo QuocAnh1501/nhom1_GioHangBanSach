@@ -1,4 +1,3 @@
-```blade
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -132,4 +131,3 @@
     @stack('scripts')
 </body>
 </html>
-```

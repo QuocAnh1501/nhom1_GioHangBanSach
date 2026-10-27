@@ -10,7 +10,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Client\OrderController as ClientOrderController;
+use App\Http\Controllers\Client\OrderHistoryController;
 
+use App\Http\Middleware\AdminMiddleware;
 /*
 |--------------------------------------------------------------------------
 | Trang chủ
@@ -68,6 +70,11 @@ Route::get('/thanh-toan', [ClientOrderController::class, 'checkout'])
 
 Route::post('/thanh-toan', [ClientOrderController::class, 'process'])
     ->name('checkout.process');
+// Hiển thị QR thanh toán theo mã đơn hàng
+Route::get('/thanh-toan/{order}/qr', [
+    ClientOrderController::class,
+    'showPayment',
+])->name('payment.show');
 
 /*
 |--------------------------------------------------------------------------
@@ -104,13 +111,32 @@ Route::post('/dang-xuat', [AuthController::class, 'logout'])
 
 /*
 |--------------------------------------------------------------------------
+| Lịch sử đơn hàng khách hàng
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth')
+    ->prefix('don-hang-cua-toi')
+    ->name('client.orders.')
+    ->group(function () {
+
+        Route::get('/', [OrderHistoryController::class, 'index'])
+            ->name('index');
+
+        Route::get('/{id}', [OrderHistoryController::class, 'show'])
+            ->whereNumber('id')
+            ->name('show');
+    });
+
+/*
+|--------------------------------------------------------------------------
 | Quản trị
 |--------------------------------------------------------------------------
 */
 
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware('auth')
+    ->middleware(['auth', AdminMiddleware::class])
     ->group(function () {
 
         // Quản lý sản phẩm

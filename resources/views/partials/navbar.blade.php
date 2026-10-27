@@ -39,6 +39,17 @@
                 </a>
             </li>
 
+            {{-- Đơn hàng của tôi: chỉ hiển thị cho khách hàng đã đăng nhập --}}
+            @auth
+                @if(auth()->user()->role !== 'admin')
+                    <li>
+                        <a href="{{ route('client.orders.index') }}" class="nav-link">
+                            Đơn hàng của tôi
+                        </a>
+                    </li>
+                @endif
+            @endauth
+
             @auth
                 {{-- Hiển thị khi đã đăng nhập --}}
                 <li>
