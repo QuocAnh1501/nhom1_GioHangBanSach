@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\DonHang;
 
 class KhachHang extends Authenticatable
 {
@@ -20,14 +21,15 @@ class KhachHang extends Authenticatable
 
     // Các cột cho phép chèn dữ liệu
     protected $fillable = [
-        'ho_ten',
-        'email',
-        'so_dien_thoai',
-        'dia_chi',
-        'mat_khau',
-        'ngay_dang_ky',
-        'trang_thai',
-    ];
+    'ho_ten',
+    'email',
+    'so_dien_thoai',
+    'dia_chi',
+    'mat_khau',
+    'ngay_dang_ky',
+    'trang_thai',
+    'role',
+];
 
     // Cột ẩn khi trả về dữ liệu
     protected $hidden = [
@@ -41,5 +43,16 @@ class KhachHang extends Authenticatable
     public function getAuthPassword()
     {
         return $this->mat_khau;
+    }
+    /**
+ * Danh sách đơn hàng của khách hàng.
+ */
+    public function donHangs()
+    {
+       return $this->hasMany(
+           DonHang::class,
+           'ma_khachhang',
+            'ma_khachhang'
+        );
     }
 }

@@ -21,24 +21,26 @@ class AuthController extends Controller
         return view('sign_in');
     }
 
-    // 1. XỬ LÝ ĐĂNG KÝ
+    // Xử lý đăng ký
     public function register(Request $request)
     {
-        $request->validate([
-            'hoten'    => 'required|string|max:255',
-            'email'    => 'required|string|email|max:255|unique:khachhang,email',
+        $validated = $request->validate([
+            'hoten' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:khachhang,email',
             'mat_khau' => 'required|string|min:6',
         ]);
 
-        // Tạo tài khoản khách hàng mới
+        // Mặc định tài khoản mới luôn là customer.
+        // Không lấy role từ dữ liệu do người dùng gửi lên.
         KhachHang::create([
-            'ho_ten'        => $request->hoten,
-            'email'         => $request->email,
-            'so_dien_thoai' => $request->so_dien_thoai ?? null,
-            'dia_chi'       => $request->dia_chi ?? null,
-            'mat_khau'      => Hash::make($request->mat_khau),
-            'ngay_dang_ky'  => now(),
-            'trang_thai'    => 1,
+            'ho_ten' => $validated['hoten'],
+            'email' => $validated['email'],
+            'so_dien_thoai' => $request->input('so_dien_thoai'),
+            'dia_chi' => $request->input('dia_chi'),
+            'mat_khau' => Hash::make($validated['mat_khau']),
+            'ngay_dang_ky' => now(),
+            'trang_thai' => 1,
+            'role' => 'customer',
         ]);
 
         return redirect()
@@ -46,22 +48,31 @@ class AuthController extends Controller
             ->with('success', 'Đăng ký tài khoản thành công!');
     }
 
-    // 2. XỬ LÝ ĐĂNG NHẬP
+    // Xử lý đăng nhập
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email'    => 'required|email',
+            'email' => 'required|email',
             'mat_khau' => 'required',
         ]);
 
-        // Chỉ cho phép tài khoản đang hoạt động đăng nhập
+        $remember = $request->boolean('remember');
+
+        // Dùng tên cột password của Laravel để xác thực
+        // với mật khẩu lưu trong cột mat_khau.
         if (Auth::attempt([
-            'email'      => $credentials['email'],
-            'password'   => $credentials['mat_khau'],
+            'email' => $credentials['email'],
+            'password' => $credentials['mat_khau'],
             'trang_thai' => 1,
-        ])) {
-            // Tạo lại session để tăng cường bảo mật
+        ], $remember)) {
             $request->session()->regenerate();
+
+            // Admin vào trang quản trị, khách hàng vào trang chủ.
+            if (Auth::user()->role === 'admin') {
+                return redirect()
+                    ->route('admin.orders.index')
+                    ->with('success', 'Đăng nhập quản trị thành công!');
+            }
 
             return redirect()
                 ->intended('/')
@@ -70,20 +81,17 @@ class AuthController extends Controller
 
         return back()
             ->withErrors([
-                'email' => 'Email hoặc mật khẩu không chính xác.',
+                'email' => 'Email hoặc mật khẩu không chính xác, hoặc tài khoản đã bị khóa.',
             ])
             ->onlyInput('email');
     }
 
-    // 3. XỬ LÝ ĐĂNG XUẤT
+    // Xử lý đăng xuất
     public function logout(Request $request)
     {
         Auth::logout();
 
-        // Hủy session hiện tại
         $request->session()->invalidate();
-
-        // Tạo lại CSRF token
         $request->session()->regenerateToken();
 
         return redirect()
