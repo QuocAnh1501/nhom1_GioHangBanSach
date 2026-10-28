@@ -65,7 +65,7 @@
 * Đăng ký, đăng nhập và đăng xuất tài khoản.
 * Phân quyền Admin và Khách hàng.
 * Hiển thị danh sách và chi tiết sách.
-* Quản lý sản phẩm: thêm, sửa, xóa và xem thông tin sách.
+* Quản lý sản phẩm: thêm, sửa, xóa.
 * Quản lý giỏ hàng và số lượng sản phẩm.
 * Đặt hàng trực tuyến.
 * Thanh toán COD và hiển thị mã QR chuyển khoản.
