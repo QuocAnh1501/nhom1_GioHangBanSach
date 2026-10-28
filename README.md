@@ -13,7 +13,7 @@
 1. Clone repository về máy:
 
    ```bash
-   git clone <URL_REPOSITORY>
+   git clone https://github.com/QuocAnh1501/nhom1_GioHangBanSach.git
    cd nhom1_GioHangBanSach
    ```
 
