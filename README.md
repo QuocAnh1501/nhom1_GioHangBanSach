@@ -56,7 +56,7 @@
    php artisan serve
    ```
 
-9. Truy cập website tại `http://127.0.0.1:8000`.
+9. Truy cập website tại `http://localhost/nhom1_GioHangBanSach/public/gio-hang`.
 
 **Lưu ý:** Nếu đã import file SQL có sẵn cấu trúc bảng, không chạy `php artisan migrate` trước khi kiểm tra các migration để tránh xung đột với cơ sở dữ liệu hiện tại.
 
